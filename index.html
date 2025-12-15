@@ -3,290 +3,276 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sunstone Opportunity Quality Score (OQS) Calculator</title>
+  <title>Sunstone Opportunity Quality Score (OQS)</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    :root{--green:#2f8a3e;--lightgreen:#dff0d8;--muted:#6b6b6b;--card:#ffffff}
-    body{font-family:Inter, Roboto, Arial, sans-serif;background:#f6f8f6;margin:0;padding:24px;color:#122;}
-    .container{max-width:980px;margin:0 auto;background:var(--card);box-shadow:0 6px 18px rgba(0,0,0,0.08);border-radius:10px;overflow:hidden}
-    header{display:flex;align-items:center;gap:12px;padding:18px 22px;background:linear-gradient(90deg,#f8fff8, #f1fff2)}
-    .logo{height:44px}
-    h1{font-size:18px;margin:0;color:var(--green)}
-    .sub{font-size:13px;color:var(--muted)}
-    .grid{display:grid;grid-template-columns:1fr 280px;gap:20px;padding:22px}
-    .card{background:#fff;padding:16px;border-radius:8px;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.03)}
-    label{display:block;font-weight:600;margin-bottom:6px;font-size:13px}
-    select,input[type=number],.row-input{width:100%;padding:8px;border-radius:6px;border:1px solid #e1e6e1;background:#fbffff}
-    .row{display:flex;gap:10px;align-items:center;margin-bottom:12px}
-    .small{font-size:12px;color:#444}
-    .btn{display:inline-block;padding:10px 14px;border-radius:8px;background:var(--green);color:#fff;border:none;cursor:pointer}
-    .result{padding:12px;border-radius:8px;background:linear-gradient(180deg,#fbfff9,#f2fff2);text-align:center}
-    .scorebig{font-size:36px;color:var(--green);font-weight:700}
-    .breakdown{margin-top:12px}
-    .break-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #edf7ee}
-    footer{padding:12px 22px;color:#666;font-size:13px}
-    @media(max-width:900px){.grid{grid-template-columns:1fr;}.logo{height:36px}}
+    :root{
+      --primary:#243a73;
+      --accent:#f4b400;
+      --soft:#f5f7fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Inter, system-ui, sans-serif;
+      background:var(--soft);
+      color:var(--text);
+    }
+
+    .container{
+      max-width:1200px;
+      margin:32px auto;
+      background:var(--card);
+      border-radius:14px;
+      box-shadow:0 12px 30px rgba(0,0,0,.08);
+      overflow:hidden;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:20px 28px;
+      background:linear-gradient(90deg,#243a73,#2f4aa0);
+      color:#fff;
+    }
+
+    header img{
+      height:42px;
+      background:#fff;
+      padding:6px 10px;
+      border-radius:6px;
+    }
+
+    header h1{font-size:20px;margin:0;font-weight:600}
+    header .sub{font-size:13px;opacity:.85}
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 360px;
+      gap:24px;
+      padding:28px;
+    }
+
+    .card{
+      background:#fff;
+      border-radius:12px;
+      padding:20px;
+      box-shadow:0 4px 12px rgba(0,0,0,.05);
+    }
+
+    .card h3{margin:0 0 16px;font-size:16px}
+
+    label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+    .row{margin-bottom:14px}
+
+    select,input[type=number]{
+      width:100%;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid #d1d5db;
+      font-size:14px;
+    }
+
+    .hint{font-size:12px;color:var(--muted);margin-top:4px}
+
+    .actions{display:flex;gap:12px;margin-top:20px}
+
+    .btn{flex:1;padding:12px;border-radius:10px;border:none;font-weight:600;cursor:pointer}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-secondary{background:#eef2ff;color:var(--primary)}
+
+    .result{text-align:center;background:linear-gradient(180deg,#fff,#f8fafc)}
+    .score{font-size:48px;font-weight:700;color:var(--primary);margin:8px 0}
+    .score-label{font-size:13px;color:var(--muted)}
+
+    .breakdown{margin-top:20px;text-align:left}
+    .break-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed #e5e7eb;font-size:13px}
+
+    footer{padding:16px 28px;background:#f9fafb;font-size:13px;color:var(--muted);text-align:center}
+
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQIAAACUCAMAAABP2deIAAAA0lBMVEX///8aPnD...4QAKWcAI2Dz/v/c5OtGWH4ONnGmrb93hKM/WH4AMWeWorV/j6oAAFO1vssVQGrC" alt="Sunstone logo">
-      <div>
-        <h1>Sunstone Opportunity Quality Score (OQS)</h1>
-        <div class="sub">Management roles — selects produce a weighted OQS (0–100)</div>
-      </div>
-    </header>
 
-    <div class="grid">
-      <div class="card">
-        <h3 style="margin-top:0">Select criteria</h3>
+<div class="container">
+  <header>
+    <img src="sunstone__logo.jpeg" alt="Sunstone Logo">
+    <div>
+      <h1>Opportunity Quality Score (OQS)</h1>
+      <div class="sub">Standardised evaluation for management roles</div>
+    </div>
+  </header>
 
-        <div class="row">
-          <div style="flex:1">
-            <label>Company Tier (1–5)</label>
-            <select id="companyTier">
-              <option value="1">1 — Other (0–50 employees)</option>
-              <option value="2">2 — Other (50–200) / Research / KPO</option>
-              <option value="3">3 — Other (200–1000)</option>
-              <option value="4">4 — MNC / Public / Unicorn / Govt / >1000 or >$250M</option>
-              <option value="5">5 — Big 5 or Fortune 500</option>
-            </select>
-            <div class="small">Weight: 35%</div>
-          </div>
-        </div>
+  <div class="grid">
+    <div class="card">
+      <h3>Opportunity Details</h3>
 
-        <div class="row">
-          <div style="flex:1">
-            <label>Glassdoor Rating</label>
-            <input id="glassdoor" type="number" min="0" max="5" step="0.1" value="3.5">
-            <div class="small">Weight: 25% — Enter company rating (e.g., 3.8)</div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div style="flex:1">
-            <label>Full Time Compensation (CTC)</label>
-            <select id="ctc">
-              <option value="0">0 — &lt;2.5 LPA</option>
-              <option value="1">1 — 2.5–3 LPA</option>
-              <option value="2">2 — 3–4 LPA</option>
-              <option value="3">3 — 4–6 LPA</option>
-              <option value="4">4 — 6–9 LPA</option>
-              <option value="5">5 — &gt;9 LPA (Fresher roles)</option>
-            </select>
-            <div class="small">Weight: 10%</div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div style="flex:1">
-            <label>Job Role Quality</label>
-            <select id="roleQuality">
-              <option value="3">3 — Sales</option>
-              <option value="5">5 — Non-Sales</option>
-            </select>
-            <div class="small">Weight: 10%</div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div style="flex:1">
-            <label>Past Campus Engagement & Feedback</label>
-            <select id="pastFeedback">
-              <option value="0">0 — Poor feedback (No process conducted)</option>
-              <option value="3">3 — Neutral (No past engagement)</option>
-              <option value="5">5 — Good feedback (Process conducted)</option>
-            </select>
-            <div class="small">Weight: 10%</div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div style="flex:1">
-            <label>PPO Conversion Cases</label>
-            <select id="ppo">
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
-            <div class="small">Weight: 10%</div>
-          </div>
-        </div>
-
-        <hr>
-        <h4 style="margin:8px 0">Stipend & Duration (Internship)</h4>
-        <div class="row">
-          <div style="flex:1">
-            <label>Stipend (INR per month)</label>
-            <select id="stipend">
-              <option value="0">0</option>
-              <option value="10000">&lt; 10,000</option>
-              <option value="15000">10,000–20,000</option>
-              <option value="20000">20,000 and above / Direct Full Time</option>
-            </select>
-          </div>
-          <div style="width:140px">
-            <label>Duration (months)</label>
-            <input id="duration" type="number" min="0" step="1" value="3">
-          </div>
-        </div>
-
-        <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
-          <button class="btn" id="calcBtn">Calculate OQS</button>
-          <button class="btn" id="resetBtn" style="background:#8aae87">Reset</button>
-        </div>
-
+      <div class="row">
+        <label>Company Tier</label>
+        <select id="companyTier">
+          <option value="1">Other (0–50 employees)</option>
+          <option value="2">Other (50–200) / Research / KPO</option>
+          <option value="3">Other (200–1000)</option>
+          <option value="4">MNC / Listed / Unicorn / Govt / >1000 employees</option>
+          <option value="5">Big 5 / Fortune 500</option>
+        </select>
+        <div class="hint">Weight: 35%</div>
       </div>
 
-      <div>
-        <div class="card result">
-          <div class="small">Overall OQS (0–100)</div>
-          <div id="finalScore" class="scorebig">0</div>
-          <div id="percentLabel" class="small">Weighted score</div>
+      <div class="row">
+        <label>Glassdoor Rating</label>
+        <input id="glassdoor" type="number" step="0.1" value="3.5">
+        <div class="hint">Weight: 25%</div>
+      </div>
 
-          <div class="breakdown" id="breakdown">
-            <!-- breakdown rows -->
-          </div>
-        </div>
+      <div class="row">
+        <label>Full Time Compensation (LPA)</label>
+        <select id="ctc">
+          <option value="0">< 2.5</option>
+          <option value="1">2.5 – 3</option>
+          <option value="2">3 – 4</option>
+          <option value="3">4 – 6</option>
+          <option value="4">6 – 9</option>
+          <option value="5">> 9 (Fresher)</option>
+        </select>
+        <div class="hint">Weight: 10%</div>
+      </div>
 
-        <div class="card" style="margin-top:16px">
-          <h4 style="margin:6px 0">How score is calculated</h4>
-          <div class="small">Each dimension is scored 0–5. The final OQS is a weighted sum of each score according to the weights below:</div>
-          <ul style="margin:8px 0 0 18px;color:#333">
-            <li>Company Tier — 35%</li>
-            <li>Glassdoor Rating — 25%</li>
-            <li>Full Time Compensation — 10%</li>
-            <li>Job Role Quality — 10%</li>
-            <li>Past Engagement — 10%</li>
-            <li>PPO Conversion — 10%</li>
-          </ul>
-        </div>
+      <div class="row">
+        <label>Job Role Quality</label>
+        <select id="role">
+          <option value="3">Sales</option>
+          <option value="5">Non-Sales</option>
+        </select>
+        <div class="hint">Weight: 10%</div>
+      </div>
+
+      <div class="row">
+        <label>Past Campus Engagement & Feedback</label>
+        <select id="feedback">
+          <option value="0">Poor (No process conducted)</option>
+          <option value="3">Neutral (No past engagement)</option>
+          <option value="5">Good (Process conducted)</option>
+        </select>
+        <div class="hint">Weight: 10%</div>
+      </div>
+
+      <div class="row">
+        <label>PPO Conversion Cases</label>
+        <select id="ppo">
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+        <div class="hint">Weight: 10%</div>
+      </div>
+
+      <hr>
+      <h3>Internship (if applicable)</h3>
+
+      <div class="row">
+        <label>Monthly Stipend (INR)</label>
+        <select id="stipend">
+          <option value="0">0</option>
+          <option value="8000">< 10,000</option>
+          <option value="15000">10,000 – 20,000</option>
+          <option value="20000">20,000+ / Direct Full Time</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label>Duration (months)</label>
+        <input id="duration" type="number" value="3" min="0">
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="calcBtn">Calculate OQS</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
       </div>
     </div>
 
-    <footer>
-      Built for Sunstone. This calculator is for management roles only. Adjust inputs and click <strong>Calculate OQS</strong>.
-    </footer>
+    <div class="card result">
+      <div class="score-label">Overall Opportunity Quality Score</div>
+      <div id="finalScore" class="score">0</div>
+      <div class="score-label">Out of 100</div>
+      <div class="breakdown" id="breakdown"></div>
+    </div>
   </div>
 
-  <script>
-    // Weights
-    const WEIGHTS = {company:35, glassdoor:25, ctc:10, role:10, past:10, ppo:10};
+  <footer>© Sunstone • OQS is a decision-support tool</footer>
+</div>
 
-    function companyScore(v){
-      // input 1..5 maps directly to score 1..5 (we'll keep 0 if unknown)
-      const n = Number(v);
-      return Math.max(0, Math.min(5, n));
+<script>
+  function glassdoorScore(r){
+    if(r < 2.5) return 0;
+    if(r <= 2.9) return 1;
+    if(r <= 3.2) return 2;
+    if(r <= 3.6) return 3;
+    if(r <= 4.0) return 4;
+    return 5;
+  }
+
+  function stipendScore(stipend, duration){
+    if(stipend === 0) return 0;
+    if(stipend < 10000){
+      if(duration >= 3 && duration <= 6) return 1;
+      if(duration >= 0 && duration <= 3) return 2;
     }
-
-    function glassdoorScore(rating){
-      // map continuous rating to 0-5 per the provided buckets in screenshot
-      const r = Number(rating);
-      if(isNaN(r)) return 0;
-      if(r < 2.5) return 0;
-      if(r < 3.0) return 1;
-      if(r < 3.3) return 2;
-      if(r < 3.7) return 3;
-      if(r < 4.0) return 4;
-      return 5;
+    if(stipend >= 10000 && stipend < 20000){
+      if(duration >= 6) return 3;
+      if(duration >= 0 && duration <= 6) return 4;
     }
+    if(stipend >= 20000) return 5;
+    return 0;
+  }
 
-    function stipendScore(stipend, duration){
-      // implement the exact logic: table provided by user
-      stipend = Number(stipend);
-      duration = Number(duration);
-      if(stipend === 0) return 0; // any duration
-      if(stipend < 10000){
-        if(duration >=3 && duration <=6) return 1;
-        if(duration >=0 && duration <=3) return 2;
-        return 1; // default
-      }
-      if(stipend >=10000 && stipend < 20000){
-        if(duration >=6) return 3;
-        // 0-6 months -> 4 according to table (10-20k 0-6 => 4)
-        return 4;
-      }
-      // 20k and above OR Direct Full time -> score 5
-      if(stipend >= 20000) return 5;
-      return 0;
-    }
+  function calc(){
+    const sCompany = +companyTier.value;
+    const sGlass = glassdoorScore(+glassdoor.value);
+    const sCTC = +ctc.value;
+    const sRole = +role.value;
+    const sFeedback = +feedback.value;
+    const sPPO = +ppo.value;
+    const stipend = +stipend.value;
+    const duration = +duration.value;
 
-    function compute(){
-      const comp = document.getElementById('companyTier').value;
-      const glass = document.getElementById('glassdoor').value;
-      const ctc = Number(document.getElementById('ctc').value);
-      const role = Number(document.getElementById('roleQuality').value);
-      const past = Number(document.getElementById('pastFeedback').value);
-      const ppo = Number(document.getElementById('ppo').value);
-      const stipend = Number(document.getElementById('stipend').value);
-      const duration = Number(document.getElementById('duration').value);
+    const sStipend = stipend > 0 ? stipendScore(stipend, duration) : sCTC;
 
-      const s_company = companyScore(comp);
-      const s_glass = glassdoorScore(glass);
-      const s_ctc = Number(ctc);
-      const s_role = Number(role);
-      const s_past = Number(past);
-      const s_ppo = Number(ppo);
-      // For internships, CTC may be replaced by stipend score if stipend>0
-      const s_stipend = stipendScore(stipend,duration);
+    const total =
+      (sCompany/5)*35 +
+      (sGlass/5)*25 +
+      (sStipend/5)*10 +
+      (sRole/5)*10 +
+      (sFeedback/5)*10 +
+      (sPPO/5)*10;
 
-      // Decide which to use for the 'compensation' slot: if stipend>0 assume internship and use stipend score
-      const s_compensation = stipend>0 ? s_stipend : s_ctc;
+    finalScore.innerText = Math.round(total);
 
-      // Weighted calculation (score 0-5 scaled to weight)
-      const totalWeight = WEIGHTS.company + WEIGHTS.glassdoor + WEIGHTS.ctc + WEIGHTS.role + WEIGHTS.past + WEIGHTS.ppo;
-      function weighted(score, weight){ return (score/5) * weight; }
+    breakdown.innerHTML = `
+      <div class='break-row'><span>Company Tier</span><strong>${sCompany}</strong></div>
+      <div class='break-row'><span>Glassdoor</span><strong>${sGlass}</strong></div>
+      <div class='break-row'><span>Compensation</span><strong>${sStipend}</strong></div>
+      <div class='break-row'><span>Role Quality</span><strong>${sRole}</strong></div>
+      <div class='break-row'><span>Past Engagement</span><strong>${sFeedback}</strong></div>
+      <div class='break-row'><span>PPO Cases</span><strong>${sPPO}</strong></div>`;
+  }
 
-      const w_company = weighted(s_company, WEIGHTS.company);
-      const w_glass = weighted(s_glass, WEIGHTS.glassdoor);
-      const w_ctc = weighted(s_compensation, WEIGHTS.ctc);
-      const w_role = weighted(s_role, WEIGHTS.role);
-      const w_past = weighted(s_past, WEIGHTS.past);
-      const w_ppo = weighted(s_ppo, WEIGHTS.ppo);
+  calcBtn.onclick = calc;
+  resetBtn.onclick = () => location.reload();
+</script>
 
-      const final = +(w_company + w_glass + w_ctc + w_role + w_past + w_ppo).toFixed(2);
-      // show as 0-100 scale
-      const final100 = Math.round(final);
-
-      document.getElementById('finalScore').innerText = final100;
-
-      const breakdown = document.getElementById('breakdown');
-      breakdown.innerHTML = '';
-      const rows = [
-        ['Company Tier', s_company, WEIGHTS.company, w_company],
-        ['Glassdoor', s_glass, WEIGHTS.glassdoor, w_glass],
-        ['Compensation', s_compensation, WEIGHTS.ctc, w_ctc],
-        ['Role Quality', s_role, WEIGHTS.role, w_role],
-        ['Past Engagement', s_past, WEIGHTS.past, w_past],
-        ['PPO Cases', s_ppo, WEIGHTS.ppo, w_ppo]
-      ];
-      rows.forEach(r =>{
-        const div = document.createElement('div');
-        div.className='break-row';
-        div.innerHTML = `<div style=\"font-weight:600;\">${r[0]}</div><div style=\"text-align:right;\"><div style=\"font-weight:700;color:var(--green)\">Score: ${r[1]}</div><div class=\"small\">Weighted: ${r[3].toFixed(2)}%</div></div>`;
-        breakdown.appendChild(div);
-      });
-    }
-
-    document.getElementById('calcBtn').addEventListener('click', compute);
-    document.getElementById('resetBtn').addEventListener('click', ()=>{
-      document.getElementById('companyTier').value='1';
-      document.getElementById('glassdoor').value='3.5';
-      document.getElementById('ctc').value='0';
-      document.getElementById('roleQuality').value='3';
-      document.getElementById('pastFeedback').value='0';
-      document.getElementById('ppo').value='0';
-      document.getElementById('stipend').value='0';
-      document.getElementById('duration').value='3';
-      document.getElementById('finalScore').innerText='0';
-      document.getElementById('breakdown').innerHTML='';
-    });
-
-    // initial compute
-    compute();
-  </script>
 </body>
 </html>
+
