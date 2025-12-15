@@ -1,283 +1,262 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sunstone Opportunity Quality Score (OQS)</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Opportunity Quality Score (OQS)</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --primary:#243a73;
-      --accent:#f4b400;
-      --soft:#f5f7fb;
-      --card:#ffffff;
-      --text:#1f2937;
-      --muted:#6b7280;
-    }
-
-    *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      font-family:Inter, sans-serif;
-      background:var(--soft);
-      color:var(--text);
-    }
-
-    .container{
-      max-width:1100px;
-      margin:32px auto;
-      background:#fff;
-      border-radius:14px;
-      box-shadow:0 12px 30px rgba(0,0,0,.08);
-      overflow:hidden;
-    }
-
-    header{
-      display:flex;
-      align-items:center;
-      gap:16px;
-      padding:20px 28px;
-      background:linear-gradient(90deg,#243a73,#2f4aa0);
-      color:#fff;
-    }
-
-    header img{
-      height:42px;
-      background:#fff;
-      padding:6px 10px;
-      border-radius:6px;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:1fr 360px;
-      gap:24px;
-      padding:28px;
-    }
-
-    .card{
-      background:#fff;
-      border-radius:12px;
-      padding:20px;
-      box-shadow:0 4px 12px rgba(0,0,0,.05);
-    }
-
-    h3{margin-top:0;font-size:16px}
-
-    label{
-      font-size:13px;
-      font-weight:600;
-      display:block;
-      margin-bottom:6px;
-    }
-
-    select,input{
-      width:100%;
-      padding:10px 12px;
-      border-radius:8px;
-      border:1px solid #d1d5db;
-      font-size:14px;
-      margin-bottom:12px;
-    }
-
-    .hint{
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:12px;
-    }
-
-    .actions{
-      display:flex;
-      gap:12px;
-      margin-top:16px;
-    }
-
-    .btn{
-      flex:1;
-      padding:12px;
-      border-radius:10px;
-      border:none;
-      font-weight:600;
-      cursor:pointer;
-    }
-
-    .btn-primary{background:var(--primary);color:#fff}
-    .btn-secondary{background:#eef2ff;color:var(--primary)}
-
-    .result{text-align:center}
-    .score{font-size:48px;font-weight:700;color:var(--primary)}
-
-    .break-row{
-      display:flex;
-      justify-content:space-between;
-      padding:8px 0;
-      font-size:13px;
-      border-bottom:1px dashed #e5e7eb;
-    }
-
-    footer{
-      padding:16px;
-      text-align:center;
-      font-size:13px;
-      color:var(--muted);
-      background:#f9fafb;
-    }
-
-    @media(max-width:900px){
-      .grid{grid-template-columns:1fr}
-    }
-  </style>
+<style>
+body{
+  margin:0;
+  font-family:Inter, sans-serif;
+  background:#f5f7fb;
+}
+.container{
+  max-width:1100px;
+  margin:30px auto;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+header{
+  padding:20px 28px;
+  background:#243a73;
+  color:#fff;
+}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 350px;
+  gap:24px;
+  padding:28px;
+}
+.card{
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,.05);
+}
+label{
+  font-size:13px;
+  font-weight:700;
+  margin-top:16px;
+  display:block;
+}
+select,input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #d1d5db;
+  margin-top:6px;
+}
+.criteria{
+  font-size:12px;
+  color:#4b5563;
+  background:#f9fafb;
+  border-left:4px solid #243a73;
+  padding:8px 10px;
+  margin-top:6px;
+}
+.actions{
+  display:flex;
+  gap:12px;
+  margin-top:20px;
+}
+button{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+.primary{background:#243a73;color:#fff}
+.secondary{background:#eef2ff;color:#243a73}
+.score{
+  font-size:48px;
+  font-weight:700;
+  color:#243a73;
+  text-align:center;
+}
+.break-row{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  border-bottom:1px dashed #e5e7eb;
+  padding:8px 0;
+}
+footer{
+  text-align:center;
+  padding:14px;
+  font-size:13px;
+  color:#6b7280;
+}
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+}
+</style>
 </head>
 
 <body>
 <div class="container">
 
 <header>
-  <img src="sunstone__logo.jpeg" alt="Sunstone Logo">
-  <div>
-    <h2>Opportunity Quality Score (OQS)</h2>
-    <div style="font-size:13px;opacity:.85">Standardised opportunity evaluation</div>
-  </div>
+  <h2>Opportunity Quality Score (OQS)</h2>
+  <div style="font-size:13px;opacity:.85">Standardised evaluation framework</div>
 </header>
 
 <div class="grid">
 
-<!-- INPUTS -->
 <div class="card">
-  <h3>Opportunity Details</h3>
+<h3>Opportunity Details</h3>
 
-  <label>Company Tier</label>
-  <select id="company">
-    <option value="1">Other (0–50 employees)</option>
-    <option value="2">Other (50–200) / Research / KPO</option>
-    <option value="3">Other (200–1000)</option>
-    <option value="4">MNC / Unicorn / PSU / >1000</option>
-    <option value="5">Big 5 / Fortune 500</option>
-  </select>
-  <div class="hint">Weight: 35%</div>
-
-  <label>Glassdoor Rating</label>
-  <input id="glassdoor" type="number" step="0.1" placeholder="e.g. 3.6">
-  <div class="hint">Weight: 25%</div>
-
-  <label>Job Role Quality</label>
-  <select id="role">
-    <option value="3">Sales</option>
-    <option value="5">Non-Sales</option>
-  </select>
-  <div class="hint">Weight: 10%</div>
-
-  <label>Past Campus Engagement & Feedback</label>
-  <select id="feedback">
-    <option value="0">Poor / No process conducted</option>
-    <option value="3">Neutral / No past engagement</option>
-    <option value="5">Good feedback / Process conducted</option>
-  </select>
-  <div class="hint">Weight: 10%</div>
-
-  <label>PPO Conversion Cases</label>
-  <select id="ppo">
-    <option value="0">0</option>
-    <option value="3">3</option>
-    <option value="5">5</option>
-  </select>
-  <div class="hint">Weight: 10%</div>
-
-  <hr>
-
-  <h3>Internship (if applicable)</h3>
-
-  <label>Monthly Stipend</label>
-  <select id="stipend">
-    <option value="0">0</option>
-    <option value="<10">Less than 10k</option>
-    <option value="10-20">10k – 20k</option>
-    <option value="20+">20k+ / Direct Full Time</option>
-  </select>
-
-  <label>Duration (months)</label>
-  <input id="duration" type="number" placeholder="e.g. 6">
-
-  <div class="actions">
-    <button class="btn btn-primary" id="calcBtn">Calculate OQS</button>
-    <button class="btn btn-secondary" id="resetBtn">Reset</button>
-  </div>
+<label>Company Tier (35%)</label>
+<select id="companyTier">
+  <option value="1">0–50 Employees</option>
+  <option value="2">50–200 / Research / KPO</option>
+  <option value="3">200–1000 Employees</option>
+  <option value="4">MNC / PSU / Unicorn / Listed</option>
+  <option value="5">Fortune 500 / Big 5</option>
+</select>
+<div class="criteria">
+1 = 0–50 | 2 = 50–200 / KPO | 3 = 200–1000 |  
+4 = MNC / PSU / Unicorn | 5 = Fortune 500
 </div>
 
-<!-- RESULT -->
-<div class="card result">
-  <div>Overall OQS</div>
-  <div class="score" id="finalScore">0</div>
-  <div>/ 100</div>
+<label>Glassdoor Rating (25%)</label>
+<input id="glassdoor" type="number" step="0.1" placeholder="e.g. 3.8">
+<div class="criteria">
+0 ≤2.5 | 1 = 2.5–2.9 | 2 = 3.0–3.2 |  
+3 = 3.3–3.6 | 4 = 3.7–4.0 | 5 > 4.0
+</div>
 
-  <div id="breakdown"></div>
+<label>Full-Time Compensation – LPA (10%)</label>
+<select id="ctc">
+  <option value="0">&lt; 2.5 LPA</option>
+  <option value="1">2.5 – 3 LPA</option>
+  <option value="2">3 – 4 LPA</option>
+  <option value="3">4 – 6 LPA</option>
+  <option value="4">6 – 9 LPA</option>
+  <option value="5">≥ 9 LPA</option>
+</select>
+
+<label>Job Role Quality (10%)</label>
+<select id="role">
+  <option value="3">Sales / Target-based</option>
+  <option value="5">Non-Sales / Core Role</option>
+</select>
+<div class="criteria">
+3 = Sales | 5 = Non-Sales
+</div>
+
+<label>Past Campus Engagement & Feedback (10%)</label>
+<select id="feedback">
+  <option value="0">Poor / No process</option>
+  <option value="3">Neutral / No past engagement</option>
+  <option value="5">Good feedback / Process conducted</option>
+</select>
+
+<label>PPO / Internship to Full-Time Conversion (10%)</label>
+<select id="ppoType">
+  <option value="fulltime">Direct Full-Time Role</option>
+  <option value="internship">Internship / PPO Based</option>
+</select>
+
+<label style="margin-top:10px">Internship Stipend</label>
+<select id="stipend">
+  <option value="0">0</option>
+  <option value="1">Less than 10k</option>
+  <option value="2">10k – 20k</option>
+  <option value="3">20k and above</option>
+</select>
+
+<label>Internship Duration (months)</label>
+<select id="duration">
+  <option value="0">0 – 3 months</option>
+  <option value="1">3 – 6 months</option>
+  <option value="2">6 months and above</option>
+</select>
+
+<div class="criteria">
+Direct Full-Time Role = Score 5<br>
+Internship scoring based on stipend & duration matrix
+</div>
+
+<div class="actions">
+  <button class="primary" id="calc">Calculate OQS</button>
+  <button class="secondary" onclick="location.reload()">Reset</button>
+</div>
+</div>
+
+<div class="card">
+<div class="score" id="score">0</div>
+<div style="text-align:center">/ 100</div>
+<div id="breakdown"></div>
 </div>
 
 </div>
 
 <footer>
-  © Sunstone • OQS is a decision-support tool, not a placement guarantee
+© Sunstone • Decision-support only
 </footer>
 
 </div>
 
 <script>
-  const calcBtn=document.getElementById("calcBtn");
-  const resetBtn=document.getElementById("resetBtn");
+function glassdoorScore(r){
+  if(r <= 2.5) return 0;
+  if(r <= 2.9) return 1;
+  if(r <= 3.2) return 2;
+  if(r <= 3.6) return 3;
+  if(r <= 4.0) return 4;
+  return 5;
+}
 
-  function glassdoorScore(r){
-    if(r<2.5) return 0;
-    if(r<=2.9) return 1;
-    if(r<=3.2) return 2;
-    if(r<=3.6) return 3;
-    if(r<=4.0) return 4;
-    return 5;
+document.getElementById("calc").addEventListener("click", () => {
+
+  const company = Number(companyTier.value);
+  const glass = glassdoorScore(Number(glassdoor.value || 0));
+  const ctcVal = Number(ctc.value);
+  const roleVal = Number(role.value);
+  const feed = Number(feedback.value);
+  // PPO logic handled below
+
+  // PPO logic
+  let ppoVal = 0;
+  const ppoType = document.getElementById("ppoType").value;
+  const stipend = Number(document.getElementById("stipend").value);
+  const duration = Number(document.getElementById("duration").value);
+
+  if (ppoType === "fulltime") {
+    ppoVal = 5;
+  } else {
+    if (stipend === 0) ppoVal = 0;
+    else if (stipend === 1 && duration === 1) ppoVal = 1;
+    else if (stipend === 1 && duration === 0) ppoVal = 2;
+    else if (stipend === 2 && duration === 2) ppoVal = 3;
+    else if (stipend === 2 && duration <= 1) ppoVal = 4;
+    else if (stipend === 3) ppoVal = 5;
   }
 
-  function internshipScore(stipend,duration){
-    if(stipend==="0") return 0;
-    if(stipend==="<10" && duration>=3 && duration<=6) return 1;
-    if(stipend==="<10" && duration<3) return 2;
-    if(stipend==="10-20" && duration>=6) return 3;
-    if(stipend==="10-20" && duration<=6) return 4;
-    if(stipend==="20+") return 5;
-    return 0;
-  }
+  const total =
+    (company/5)*35 +
+    (glass/5)*25 +
+    (ctcVal/5)*10 +
+    (roleVal/5)*10 +
+    (feed/5)*10 +
+    (ppoVal/5)*10;
 
-  function calc(){
-    const company=+company.value;
-    const glass=glassdoorScore(+glassdoor.value);
-    const roleScore=+role.value;
-    const feedbackScore=+feedback.value;
-    const ppoScore=+ppo.value;
+  score.innerText = Math.round(total);
 
-    const intern=internshipScore(stipend.value,+duration.value||0);
-
-    const total=
-      (company/5)*35+
-      (glass/5)*25+
-      (intern/5)*10+
-      (roleScore/5)*10+
-      (feedbackScore/5)*10+
-      (ppoScore/5)*10;
-
-    finalScore.innerText=Math.round(total);
-
-    breakdown.innerHTML=`
-      <div class="break-row"><span>Company Tier</span><strong>${company}</strong></div>
-      <div class="break-row"><span>Glassdoor</span><strong>${glass}</strong></div>
-      <div class="break-row"><span>Internship / CTC</span><strong>${intern}</strong></div>
-      <div class="break-row"><span>Role Quality</span><strong>${roleScore}</strong></div>
-      <div class="break-row"><span>Campus Feedback</span><strong>${feedbackScore}</strong></div>
-      <div class="break-row"><span>PPO Conversion</span><strong>${ppoScore}</strong></div>
-    `;
-  }
-
-  calcBtn.addEventListener("click",calc);
-  resetBtn.addEventListener("click",()=>location.reload());
+  breakdown.innerHTML = `
+    <div class="break-row"><span>Company Tier</span><b>${company}</b></div>
+    <div class="break-row"><span>Glassdoor</span><b>${glass}</b></div>
+    <div class="break-row"><span>CTC</span><b>${ctcVal}</b></div>
+    <div class="break-row"><span>Role Quality</span><b>${roleVal}</b></div>
+    <div class="break-row"><span>Campus Feedback</span><b>${feed}</b></div>
+    <div class="break-row"><span>PPO / Conversion</span><b>${ppoVal}</b></div>
+  `;
+});
 </script>
 
 </body>
